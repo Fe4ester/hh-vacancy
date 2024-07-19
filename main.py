@@ -5,6 +5,20 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from pprint import pprint
 
+
+def remove_duplicates(dicts):
+    seen = set()
+    unique_dicts = []
+
+    for d in dicts:
+        dict_tuple = tuple(sorted(d.items()))
+        if dict_tuple not in seen:
+            seen.add(dict_tuple)
+            unique_dicts.append(d)
+
+    return unique_dicts
+
+
 path = Service(ChromeDriverManager().install())
 
 options = webdriver.ChromeOptions()
@@ -46,16 +60,14 @@ for div in main_tags:
         link_text = None
 
     if description_text is not None:
-        if 'django' in description_text.lower() or 'flask' in description_text.lower():
-
-            total_vacancy.append({
-                'description': description_text,
-                'salary': salary_text,
-                'link': link_text
-            })
-
-
+        total_vacancy.append({
+            'description': description_text,
+            'salary': salary_text,
+            'link': link_text
+        })
 
 browser.quit()
 
-pprint(total_vacancy)
+total_vacancy = remove_duplicates(total_vacancy)
+
+
